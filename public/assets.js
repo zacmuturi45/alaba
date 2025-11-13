@@ -1,0 +1,1 @@
+export { default as js } from "./js.svg";

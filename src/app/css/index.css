@@ -1,8 +1,35 @@
+@font-face {
+  font-family: "nhg";
+  src: url("../../../public/Fonts/neue_haas_grotesk/NeueHaasDisplayLight.ttf");
+  font-style: normal;
+}
 body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   margin: 0;
   padding: 0;
+}
+
+.main_container {
+  border: 2px solid red;
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  padding-top: 200px;
+}
+.main_container button {
+  width: 80px;
+  height: 35px;
+}
+.main_container h1 {
+  font-family: "nhg";
+  font-size: 64px;
+}
+.main_container .trial p {
+  font-family: "nhg";
+  font-size: 1.5rem;
 }
 /*# sourceMappingURL=index.css.map */
