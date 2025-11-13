@@ -2,70 +2,111 @@
 
 import gsap from "gsap";
 import "./css/index.css";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { TextPlugin } from "gsap/TextPlugin";
+import { SplitText } from "gsap/SplitText";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import Image from "next/image";
-import { js } from "../../public/assets";
+import { scramble } from "../../public/assets";
 
 gsap.registerPlugin(TextPlugin);
-interface CommandMap {
-  play: () => void;
-  pause: () => void;
-  restart: () => void;
-  repeat: () => void;
-  reverse: () => void;
-}
-type Command = keyof CommandMap;
+gsap.registerPlugin(SplitText);
+gsap.registerPlugin(ScrambleTextPlugin);
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
-  const [count, setCount] = useState<number>(0);
-  const buttonCommands: Command[] = ["play", "pause", "restart", "repeat", "reverse"];
 
   useGSAP(
     () => {
-      const tl = gsap.timeline();
-      const commandMap: CommandMap = {
-        play: () => tl.play(),
-        pause: () => tl.pause(),
-        restart: () => tl.restart(),
-        repeat: () => tl.repeat(),
-        reverse: () => tl.reverse(),
-      };
+      const tl = gsap.timeline({
+        id: "text-scramble",
+        defaults: { ease: "none" },
+      });
 
-      tl.from(".jsOne", {
-        y: 100,
-        duration: 3,
-      }).from(".jsTwo", { y: 100, duration: 2 });
+      const cursorTl = gsap.timeline({ repeat: -1 });
 
-      gsap.to(".text", {
-        duration: 2,
-        text: {
-          value: "Hello World!",
-          delimiter: "",
+      gsap.set("#scramble-text-original", {
+        opacity: 0,
+      });
+
+      cursorTl
+        .to("#scramble-cursor", {
+          opacity: 0,
+          duration: 0.5,
+          ease: "none",
+          delay: 0.2,
+        })
+        .to("#scramble-cursor", {
+          opacity: 1,
+          duration: 0.5,
+          ease: "none",
+          delay: 0.2,
+        });
+
+      tl.to("#scramble-text-1", {
+        scrambleText: {
+          text: "Mix it up with ScrambleText.",
+          chars: "lowercase",
         },
-        ease: "none",
-      });
-      buttonCommands.forEach((item) => {
-        document.getElementById(item)?.addEventListener("click", () => commandMap[item]());
-      });
+        duration: 4,
+      })
+        .to("#scramble-text-2", {
+          scrambleText: {
+            text: " Animate using characters",
+            chars: "XO",
+            speed: 0.4,
+          },
+          duration: 2,
+        })
+        .to("#scramble-text-3", {
+          scrambleText: { text: " numbers,", chars: "0123456789" },
+          duration: 2,
+        })
+        .to("#scramble-text-4", {
+          scrambleText: { text: "UPPERCASE", chars: "uppercase", speed: 0.3 },
+          duration: 1,
+        })
+        .to("#scramble-text-5", {
+          scrambleText: {
+            text: "or lowercase.",
+            speed: 0.3,
+          },
+          duration: 1.5,
+        })
+        .add(cursorTl);
+
+      window.onclick = () => tl.play(0);
     },
-    { scope: container, dependencies: [count], revertOnUpdate: true }
+    { scope: container }
   );
+
   return (
-    <div className="main_container">
-      <button onClick={() => setCount(count + 1)}>{count}</button>
-      {buttonCommands.map((button, i) => (
-        <button id={button}>{button}</button>
-      ))}
-      <div className="textContainer">
-        <h1>New next app</h1>
-        <div className="trial" ref={container}>
-          <p className="text"></p>
-          <Image src={js} width={100} height={100} alt="svg_image" className="jsOne" />
-          <Image src={js} width={100} height={100} alt="svg_image" className="jsTwo" />
-        </div>
+    <div className="main_container" ref={container}>
+      {/* <h1>New next app</h1> */}
+      <div className="trial">
+        <p id="scramble-text-original">
+          Mix it up with ScrambleText. Animate <br /> using charactres, numbers, <br /> UPPERCASE or
+          lowercase.
+        </p>
+
+        <p className="text-scramble__text" aria-hidden="true">
+          <span id="scramble-text-1"></span>
+          <span id="scramble-text-2"></span>
+          <span id="scramble-text-3"></span>
+          <span id="scramble-text-4"></span>
+          <span id="scramble-text-5"></span>
+
+          <Image
+            src={scramble}
+            width={30}
+            height={30}
+            alt="scramble"
+            className="img"
+            unoptimized
+            id="scramble-cursor"
+          />
+        </p>
       </div>
     </div>
   );

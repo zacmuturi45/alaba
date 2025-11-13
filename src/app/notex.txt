@@ -1,0 +1,260 @@
+GSAP Text Plugin Guide
+**The Text Plugin is a premium GSAP Plugin that animates text character-by-character, word-by-word, or with various text effects. 
+
+**Text Plugin vs Split Text
+GSAP has two text-related plugins
+
+1. SplitText -:
+ - Splits text into characters, words, or lines
+ - Creates wrapping elements for animation
+ - Most commonly used for text animations
+
+2. TextPlugin
+ - Animates text content itself (typing effect)
+ - Changes the actual text content
+ - Limited use cases
+
+ SPLIT TEXT EXAMPLE................................
+**First register the SplitText Plugin
+
+    // import it
+    import { SplitText } from "gsap/SplitText";
+
+    // Register it
+    gsap.registerPlugin(SplitText)
+
+Import the useGSAP hook and let's start animating inside: Remember, the useGSAP hook, provides cleanup duties automatically, works better with typescript and handles context better.
+
+    useGSAP(() => {
+        // Animation logic goes here
+    }, { scope: containerRef })
+
+
+    **Splitting the text
+
+    const split = new SplitText(".text", {
+        type: 'chars'
+    });
+
+Normally, if you animate an HTML element with text, the entire text changes as a block.
+SplitText wraps each part of the text in a <span> so GSAP can animate them independently.
+
+    syntax: const split = new SplitText(target, options)
+
+Example: 
+
+SPLIT BY 'chars', 'words', 'lines'...............................
+
+
+--split by 'chars'
+
+**Suitable for shorter lines of two to three words
+
+    <h1 class="text">Hello</h1>
+
+    After SplitText with type: "chars":
+
+    <h1 class="text">
+    <span>H</span><span>e</span><span>l</span><span>l</span><span>o</span>
+    </h1>
+
+Now each character is a DOM element, ready to animate.
+
+    useGsap(() => {
+        const split = new SplitText(".text", {
+            type: "chars"
+        });
+
+        gsap.from(split.chars, {
+            y: 50,
+            rotateX: -90 // -> This makes the text appear as if un-flattening
+            duration: 1.2,
+            stagger: 0.04,
+            ease: "back.out(1.7)",
+        });
+    })
+
+..................................................................
+--split by 'words'
+
+**Suitable for longer lines
+
+    <h1 class="text">Hello world, I am a developer</h1>
+
+After SplitText with type: "words"
+
+    <h1 class="text">
+    <span>Hellow</span><span>world</span><span>I</span><span>am</span><span>a</span><span>developer</span>
+    </h1>
+
+    const split = new SplitText(".text", {
+        type: "words"
+    });
+
+    useGsap(() => {
+        const split = new SplitText(".text", {
+            type: "words"
+        });
+
+        gsap.from(split.chars, {
+            y: 50,
+            rotateX: -90 // -> This makes the text appear as if un-flattening
+            duration: 1.2,
+            stagger: 0.04,
+            ease: "back.out(1.7)",
+        });
+    })
+
+ .................................................................
+ --split by 'lines'
+
+ **Suitable for paragraphs/multiple lines
+
+ Here SplitText splits visually based on how lines wraps in the browser.
+ A line is any horizontal row of text that appears on screen.
+ Doesn't matter if you control wrapping by css or by the <br/> tag.
+ Each line becomes a wrapper <div>.
+
+    html before SplitText
+
+    <h1 class="text">
+    This is an example of
+    splitting by words
+    and lines with GSAP
+    </h1>
+
+The above is one h1 element. Visually it might wrap into 3 lines depending on your container width and css settings.
+
+
+After SplitText with type: "lines"
+
+    <h1>
+
+    <div class="text">
+    This is an example of
+    </div>
+
+    <div class="text">
+    splitting by words
+    </div>
+
+
+    <div class="text">
+    and lines with GSAP
+    </div>
+
+    </h1>
+
+
+    const split = new SplitText(".text", {
+        type: "lines"
+    });
+
+    useGsap(() => {
+        const split = new SplitText(".text", {
+            type: "lines"
+        });
+
+        gsap.from(split.chars, {
+            y: 50,
+            rotateX: -90 // -> This makes the text appear as if un-flattening
+            duration: 1.2,
+            stagger: 0.04,
+            ease: "back.out(1.7)",
+        });
+    })
+
+Different easings provide different effects. "back.out(1.7)" for example may be more playful and bouncy, power4.out may be more rigid. Experiment to find the best easing
+
+1️⃣ Smooth Fade/Slide In
+
+Easing: power1.out or power2.out
+
+Use Case: Text slides in from below or fades in without being too dramatic.
+
+Effect: Smooth, natural, readable.
+
+2️⃣ Bounce / Playful Entrance
+
+Easing: back.out(1.7)
+
+Use Case: Text “pops” into view, feels alive or whimsical.
+
+Effect: Each character or word overshoots slightly and settles into place.
+
+3️⃣ Typewriter / Sequential Reveal
+
+Easing: none or linear
+
+Use Case: Typing effect or letter-by-letter reveal.
+
+Effect: Constant speed, clean, professional.
+
+4️⃣ Fade + Slight Pop (Combination)
+
+Easing: power3.out for overall fade, back.out(1.5) for small pops.
+
+Use Case: Elegant but playful text reveals.
+
+Effect: Smooth entrance, small dynamic movement.
+.......................................................................
+
+const tl = gsap.timeline({
+  id: "text-scramble",
+  defaults: { ease: "none" }
+});
+
+const cursorTl = gsap.timeline({ repeat: -1 });
+
+gsap.set("#scramble-text-original", {
+  opacity: 0
+});
+
+cursorTl
+  .to("#scramble-cursor", {
+    opacity: 0,
+    duration: 0.5,
+    ease: "none",
+    delay: 0.2
+  })
+  .to("#scramble-cursor", {
+    opacity: 1,
+    duration: 0.5,
+    ease: "none",
+    delay: 0.2
+  });
+
+tl.to("#scramble-text-1", {
+  scrambleText: {
+    text: "Mix it up with ScrambleText.",
+    chars: "lowerCase"
+  },
+  duration: 2
+})
+  .to("#scramble-text-2", {
+    scrambleText: {
+      text: "Animate using characters",
+      chars: "XO",
+      speed: 0.4
+    },
+    duration: 2
+  })
+  .to("#scramble-text-3", {
+    scrambleText: { text: " numbers,", chars: "0123456789" },
+    duration: 2
+  })
+  .to("#scramble-text-4", {
+    scrambleText: { text: "UPPERCASE", chars: "upperCase", speed: 0.3 },
+    duration: 1
+  })
+  .to("#scramble-text-5", {
+    scrambleText: {
+      text: "or lowercase.",
+      chars: "lowerCase",
+      speed: 0.3
+    },
+    duration: 1.5
+  })
+  .add(cursorTl);
+
+window.onclick = () => tl.play(0); // click to replay
