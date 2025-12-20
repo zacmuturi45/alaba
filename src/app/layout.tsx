@@ -1,30 +1,30 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+"use client";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+import { createContext, useContext, useRef } from "react";
+import Navbar from "./Components/navbar";
+
+const AnimationContext = createContext<AnimationContextType>({
+  isReady: false,
+  hasAnimated: false,
+  setHasAnimated: () => {},
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Gsap Masterclass",
-  description: "Gsap masterclass.pro",
-};
+export const useAnimationReady = () => useContext(AnimationContext);
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+      <body>
+        <main ref={contentRef} className="main_content">
+          <Navbar />
+          {children}
+        </main>
       </body>
     </html>
   );

@@ -33,11 +33,98 @@ body {
 }
 
 .main_container {
-  border: 2px solid red;
   width: 100%;
   height: 100vh;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid red;
+  > * {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
+
+// NAVBAR
+.navbar {
+  position: fixed;
+  top: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  z-index: 1;
+  height: 64px;
+  padding: 0 24px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(60px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border-radius: 16px;
+  border: none;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+  color: #fff;
+  .navContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    .logo {
+      display: flex;
+      height: 100;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      // border: 1px solid blue;
+
+      .logo_svg {
+        width: 2rem;
+        height: 2rem;
+      }
+      h4 {
+        font-size: 1.2rem;
+        font-family: var(--main-font);
+        color: rgb(198, 198, 198);
+        font-weight: 800;
+      }
+    }
+    .nav_time {
+      p {
+        font-size: 1rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: white;
+        font-family: var(--main-font);
+        z-index: 5;
+        font-weight: 400;
+      }
+    }
+    .nav_links_container {
+      height: 100%;
+      display: flex;
+      div {
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        cursor: pointer;
+        justify-content: space-between;
+        .nav_links {
+          font-size: 1rem;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: white;
+          font-family: var(--main-font);
+          z-index: 5;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}
+// NAVBAR
